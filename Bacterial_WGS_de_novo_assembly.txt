@@ -1,0 +1,152 @@
+#Bacterial WGS from short reads (150bp)
+#Feb 2025
+#Tutorial used for this: (source: https://github.com/Joseph7e/MDIBL-T3-WGS-Tutorial#adapter-and-quality-trimming)
+#Also used a lot of Ben’s help :)
+
+#Get and set path
+pwd
+cd ~/Documents/PhD/MU42022_WGS
+
+#Update: having issues with conda, ignore and download programs manually then update profile (add path to profile)
+#After downloading miniconda
+#Create conda environment
+#conda create -n WGS
+#Check environments
+#conda info —envs
+#Activate WGS env
+#conda activate WGS
+#Active environment has an “*”
+#Have error “Library not loaded: @rpath/libarchive.13.dylib”
+#Apparently, a glitch with Apple M1 chips 
+#(see: https://github.com/mamba-org/mamba/issues/1826)
+#conda install libarchive -n base -c conda-forge #Issue: would not complete
+#Ignoring above issue for now, try following Ben’s simple_reads_to_counts repo
+#conda install -c bioconda fastqc
+
+
+#Installing packages manually: (i.e., not with conda or homebrewer)
+#https://www.bioinformatics.babraham.ac.uk/projects/download.html#fastqc
+#Installed fastqc onto my programs folder
+#Can add programs to your zshrc profile by adding program path, but be very careful as can cause issues.
+#To access zshrc pathway use:
+vi ~/.zshrc 
+
+#Instead of adding to my profile, I will just state path of program and of my fasta files in the code
+#Find fastqc program:
+ ~/programs/FastQC.app/Contents/MacOS/fastqc 
+
+#run fastqc on fasta files: Roseo_R1.fastq  (forward) and Roseo_R2.fastq (reverse)
+#Set output directory as: raw_data_R1 and raw_data_R2, respectively
+#Use 12 threads to run code (-t 12)
+
+#reset working directory
+cd ~/Documents/PhD/MU42022_WGS
+
+ ~/programs/FastQC.app/Contents/MacOS/fastqc  Roseo_R1_new.fastq.gz -o raw_data_R1 -t 12
+
+ ~/programs/FastQC.app/Contents/MacOS/fastqc Roseo_R2_new.fastq.gz -o raw_data_R2 -t 12
+
+ls raw_data_R1
+ls raw_data_R2
+
+#View fastqc results by clicking on html link
+#Results for both F and R will say “failed” adapter content - because adaptors need to be removed
+#Reads look like extremely good quality, R read needs slight trimming on tail
+#R read also has a “overrepresented sequence”
+
+#Tutorial being followed uses a “wrapper script” (trim_scriptV2.sh) to run trimming with Trimmomatic
+#Good Trimmomatic tutorial: https://datacarpentry.github.io/wrangling-genomics/03-trimming.html
+
+~/Documents/PhD/MU42022_WGS/trim_script_TruSeq.sh raw_data_R1 raw_data_R2
+
+#”permission denied” for trim_script_TruSeq.sh - use chmod
+
+#Check permissions
+ls -l ~/Documents/PhD/MU42022_WGS/trim_script_TruSeq.sh
+
+#Make script executable for you
+chmod 755 ~/Documents/PhD/MU42022_WGS/trim_script_TruSeq.sh
+
+trim_script_TruSeq.sh FORWARD REVERSE
+
+#Cannot access trimmomatic with wrapper script - just run script manually
+
+#make fastqz files qzip as getting file corruption issues 
+gzip Roseo_R1_new.fastq
+gzip Roseo_R2_new.fastq
+
+FORWARD="Roseo_R1_new.fastq.gz”
+REVERSE="Roseo_R2_new.fastq.gz”
+
+echo $FORWARD
+echo $REVERSE
+
+
+java -jar ~/programs/Trimmomatic-0.39/trimmomatic-0.39.jar PE -threads 72 -phred33\
+    Roseo_R1_new.fastq.gz Roseo_R2_new.fastq.gz \
+    paired_forward.fastq.gz unpaired_forward.fastq.gz \
+    paired_reverse.fastq.gz unpaired_reverse.fastq.gz \
+    ILLUMINACLIP:/Users/maris/programs/Trimmomatic-0.39/adapters/TruSeq2-PE.fa:2:30:10 \
+    SLIDINGWINDOW:4:15 MINLEN:36
+
+#Here I only have one sample, but with many samples, will want to run a loop in the code
+
+
+#Getting error: Sequence and quality length don't match
+#Maybe files did not download fully - redownloaded and error solved
+#New error: “Unknown trimmer: unpaired_reverse.fastq.gz”
+
+#now getting Sequence and quality length don't match error again
+#tried using 1 thread (suggested online) but did not help
+#Adding phred33 worked! 
+
+#re run fastqc on trimmed reads
+
+ ~/programs/FastQC.app/Contents/MacOS/fastqc   paired_forward.fastq.gz -o raw_data_R1 -t 12
+
+ ~/programs/FastQC.app/Contents/MacOS/fastqc   paired_reverse.fastq.gz -o raw_data_R1 -t 12
+
+#Issues still present - mainly, some overrepresented sequence and adapter content in forward .gz
+#Will ask if this is an issue
+
+#Continue, download SPAdes genome assembler
+#Downloaded in packages folder, path:
+
+ cd ~/programs/SPAdes-4.0.0-Darwin/bin/spades.py
+
+chmod 755 ~/programs/SPAdes-4.0.0-Darwin/bin/spades-core
+
+nohup ~/programs/SPAdes-4.0.0-Darwin/bin/spades.py -1 paired_forward.fastq.gz -2 paired_reverse.fastq.gz -s unpaired_forward.fastq.gz -s unpaired_reverse.fastq.gz -o spades_assembly_default -t 24 --isolate &
+
+
+~/programs/SPAdes-4.0.0-Darwin/bin/spades.py -1 paired_forward.fastq.gz -2 paired_reverse.fastq.gz -s unpaired_forward.fastq.gz -s unpaired_reverse.fastq.gz -o spades_assembly_default -t 24 --isolate
+
+#Getting issue: “spades-core” can’t be opened because Apple cannot check it for malicious software.
+#Tried chmod 755 on spades-core but nothing changed
+#downloaded correct bin file for Mac M2 chip (SPAdes-4.0.0-Darwin-arm64.tar.gz)
+#Must click on app (spades-core) and allow opening
+
+#Notice that the above command makes use of 'nohup' and '&'. Its good practice to always use these two together. #This allows you to close your computer and let the server continue working and/or let you continue working while the #job runs in the background.
+#SUCCESSFUL!
+
+#Check assembly
+ls spades_assembly_default/
+# view FASTA file
+less -S spades_assembly_default/contigs.fasta
+# view the top 10 headers
+grep '>' spades_assembly_default/contigs.fasta | head
+# count the number of sequences
+grep -c '>' spades_assembly_default/contigs.fasta #826
+
+#In a perfect world, you would expect ~2 contigs (1 chromosome + a plasmid)
+#We typically see a genome split into 10's to 100's of contigs for a typical run
+#I have 826 contigs
+
+#Genome structure assessment
+#Using QUAST: http://quast.bioinf.spbau.ru/manual.html
+
+# look at the usage
+~/programs/quast-5.3.0/quast.py --help
+# run the command
+~/programs/quast-5.3.0/quast.py spades_assembly_default/contigs.fasta -o quast_results
+

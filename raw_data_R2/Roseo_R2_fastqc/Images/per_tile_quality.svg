@@ -1,0 +1,67 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="800" height="600" version="1.1" xmlns="http://www.w3.org/2000/svg">
+<rect width="800" height="600" x="0" y="0" style="fill:rgb(238,238,238);stroke:none"/>
+<rect width="800" height="600" x="0" y="0" style="fill:rgb(255,255,255);stroke:none"/>
+<text x="2" y="560" fill="rgb(0,0,0)" font-family="Arial" font-size="12">1101</text>
+<text x="371" y="30" fill="rgb(0,0,0)" font-family="Arial" font-size="12">Quality per tile</text>
+<line x1="37" y1="560" x2="790" y2="560" stroke="rgb(0,0,0)" stroke-width="1"/>
+<line x1="37" y1="560" x2="37" y2="40" stroke="rgb(0,0,0)" stroke-width="1"/>
+<text x="342" y="595" fill="rgb(0,0,0)" font-family="Arial" font-size="12">Position in read (bp)</text>
+<text x="42" y="575" fill="rgb(0,0,0)" font-family="Arial" font-size="12">1</text>
+<text x="61" y="575" fill="rgb(0,0,0)" font-family="Arial" font-size="12">2</text>
+<text x="80" y="575" fill="rgb(0,0,0)" font-family="Arial" font-size="12">3</text>
+<text x="99" y="575" fill="rgb(0,0,0)" font-family="Arial" font-size="12">4</text>
+<text x="118" y="575" fill="rgb(0,0,0)" font-family="Arial" font-size="12">5</text>
+<text x="137" y="575" fill="rgb(0,0,0)" font-family="Arial" font-size="12">6</text>
+<text x="156" y="575" fill="rgb(0,0,0)" font-family="Arial" font-size="12">7</text>
+<text x="175" y="575" fill="rgb(0,0,0)" font-family="Arial" font-size="12">8</text>
+<text x="194" y="575" fill="rgb(0,0,0)" font-family="Arial" font-size="12">9</text>
+<text x="217" y="575" fill="rgb(0,0,0)" font-family="Arial" font-size="12">15-19</text>
+<text x="274" y="575" fill="rgb(0,0,0)" font-family="Arial" font-size="12">30-34</text>
+<text x="331" y="575" fill="rgb(0,0,0)" font-family="Arial" font-size="12">45-49</text>
+<text x="388" y="575" fill="rgb(0,0,0)" font-family="Arial" font-size="12">60-64</text>
+<text x="445" y="575" fill="rgb(0,0,0)" font-family="Arial" font-size="12">75-79</text>
+<text x="502" y="575" fill="rgb(0,0,0)" font-family="Arial" font-size="12">90-94</text>
+<text x="551" y="575" fill="rgb(0,0,0)" font-family="Arial" font-size="12">105-109</text>
+<text x="627" y="575" fill="rgb(0,0,0)" font-family="Arial" font-size="12">125-129</text>
+<text x="703" y="575" fill="rgb(0,0,0)" font-family="Arial" font-size="12">145-149</text>
+<rect width="19" height="520" x="37" y="40" style="fill:rgb(0,0,200);stroke:none"/>
+<rect width="19" height="520" x="56" y="40" style="fill:rgb(0,0,200);stroke:none"/>
+<rect width="19" height="520" x="75" y="40" style="fill:rgb(0,0,200);stroke:none"/>
+<rect width="19" height="520" x="94" y="40" style="fill:rgb(0,0,200);stroke:none"/>
+<rect width="19" height="520" x="113" y="40" style="fill:rgb(0,0,200);stroke:none"/>
+<rect width="19" height="520" x="132" y="40" style="fill:rgb(0,0,200);stroke:none"/>
+<rect width="19" height="520" x="151" y="40" style="fill:rgb(0,0,200);stroke:none"/>
+<rect width="19" height="520" x="170" y="40" style="fill:rgb(0,0,200);stroke:none"/>
+<rect width="19" height="520" x="189" y="40" style="fill:rgb(0,0,200);stroke:none"/>
+<rect width="19" height="520" x="208" y="40" style="fill:rgb(0,0,200);stroke:none"/>
+<rect width="19" height="520" x="227" y="40" style="fill:rgb(0,0,200);stroke:none"/>
+<rect width="19" height="520" x="246" y="40" style="fill:rgb(0,0,200);stroke:none"/>
+<rect width="19" height="520" x="265" y="40" style="fill:rgb(0,0,200);stroke:none"/>
+<rect width="19" height="520" x="284" y="40" style="fill:rgb(0,0,200);stroke:none"/>
+<rect width="19" height="520" x="303" y="40" style="fill:rgb(0,0,200);stroke:none"/>
+<rect width="19" height="520" x="322" y="40" style="fill:rgb(0,0,200);stroke:none"/>
+<rect width="19" height="520" x="341" y="40" style="fill:rgb(0,0,200);stroke:none"/>
+<rect width="19" height="520" x="360" y="40" style="fill:rgb(0,0,200);stroke:none"/>
+<rect width="19" height="520" x="379" y="40" style="fill:rgb(0,0,200);stroke:none"/>
+<rect width="19" height="520" x="398" y="40" style="fill:rgb(0,0,200);stroke:none"/>
+<rect width="19" height="520" x="417" y="40" style="fill:rgb(0,0,200);stroke:none"/>
+<rect width="19" height="520" x="436" y="40" style="fill:rgb(0,0,200);stroke:none"/>
+<rect width="19" height="520" x="455" y="40" style="fill:rgb(0,0,200);stroke:none"/>
+<rect width="19" height="520" x="474" y="40" style="fill:rgb(0,0,200);stroke:none"/>
+<rect width="19" height="520" x="493" y="40" style="fill:rgb(0,0,200);stroke:none"/>
+<rect width="19" height="520" x="512" y="40" style="fill:rgb(0,0,200);stroke:none"/>
+<rect width="19" height="520" x="531" y="40" style="fill:rgb(0,0,200);stroke:none"/>
+<rect width="19" height="520" x="550" y="40" style="fill:rgb(0,0,200);stroke:none"/>
+<rect width="19" height="520" x="569" y="40" style="fill:rgb(0,0,200);stroke:none"/>
+<rect width="19" height="520" x="588" y="40" style="fill:rgb(0,0,200);stroke:none"/>
+<rect width="19" height="520" x="607" y="40" style="fill:rgb(0,0,200);stroke:none"/>
+<rect width="19" height="520" x="626" y="40" style="fill:rgb(0,0,200);stroke:none"/>
+<rect width="19" height="520" x="645" y="40" style="fill:rgb(0,0,200);stroke:none"/>
+<rect width="19" height="520" x="664" y="40" style="fill:rgb(0,0,200);stroke:none"/>
+<rect width="19" height="520" x="683" y="40" style="fill:rgb(0,0,200);stroke:none"/>
+<rect width="19" height="520" x="702" y="40" style="fill:rgb(0,0,200);stroke:none"/>
+<rect width="19" height="520" x="721" y="40" style="fill:rgb(0,0,200);stroke:none"/>
+<rect width="19" height="520" x="740" y="40" style="fill:rgb(0,0,200);stroke:none"/>
+</svg>

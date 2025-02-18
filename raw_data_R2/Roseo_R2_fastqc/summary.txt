@@ -1,0 +1,11 @@
+PASS	Basic Statistics	Roseo_R2.fastq
+PASS	Per base sequence quality	Roseo_R2.fastq
+PASS	Per tile sequence quality	Roseo_R2.fastq
+PASS	Per sequence quality scores	Roseo_R2.fastq
+PASS	Per base sequence content	Roseo_R2.fastq
+PASS	Per sequence GC content	Roseo_R2.fastq
+PASS	Per base N content	Roseo_R2.fastq
+PASS	Sequence Length Distribution	Roseo_R2.fastq
+PASS	Sequence Duplication Levels	Roseo_R2.fastq
+WARN	Overrepresented sequences	Roseo_R2.fastq
+FAIL	Adapter Content	Roseo_R2.fastq
