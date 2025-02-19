@@ -32,6 +32,21 @@ cd ~/Documents/PhD/MU42022_WGS
 vi ~/.zshrc 
 
 #Instead of adding to my profile, I will just state path of program and of my fasta files in the code
+#Having issues with corrupted fasta file (only partially downloaded)
+#Ben says try Firefox with DownThemAll application
+#After, check if md5 finger print matches md5 link
+
+#Should match:
+5fb7053ae790791cb97218ca117441fa  NS.X0139.007.IDT_i7_313---IDT_i5_313.Roseo_R1.fastq.gz
+8b58f5ac95bf89a87e7ff82ceaea1222  NS.X0139.007.IDT_i7_313---IDT_i5_313.Roseo_R2.fastq.gz
+
+#To check use:
+
+md5 ~/Downloads/.fastafile
+md5 -r ~/Downloads/.fastafile
+
+#Press q to exit
+
 #Find fastqc program:
  ~/programs/FastQC.app/Contents/MacOS/fastqc 
 
@@ -112,7 +127,7 @@ java -jar ~/programs/Trimmomatic-0.39/trimmomatic-0.39.jar PE -threads 72 -phred
 #Continue, download SPAdes genome assembler
 #Downloaded in packages folder, path:
 
- cd ~/programs/SPAdes-4.0.0-Darwin/bin/spades.py
+cd ~/programs/SPAdes-4.0.0-Darwin/bin/spades.py
 
 chmod 755 ~/programs/SPAdes-4.0.0-Darwin/bin/spades-core
 
@@ -140,7 +155,7 @@ grep -c '>' spades_assembly_default/contigs.fasta #826
 
 #In a perfect world, you would expect ~2 contigs (1 chromosome + a plasmid)
 #We typically see a genome split into 10's to 100's of contigs for a typical run
-#I have 826 contigs
+#I have 826 contigs (or actually it might be 10...Confused)
 
 #Genome structure assessment
 #Using QUAST: http://quast.bioinf.spbau.ru/manual.html
@@ -149,4 +164,109 @@ grep -c '>' spades_assembly_default/contigs.fasta #826
 ~/programs/quast-5.3.0/quast.py --help
 # run the command
 ~/programs/quast-5.3.0/quast.py spades_assembly_default/contigs.fasta -o quast_results
+
+#Next, using BUSCO to assess genome content completeness
+#Based on the presence of highly conserved genomic regions for your group of interest (e.g., Bacteria)
+#PATH:
+~/programs/busco-5.8.1/bin
+#Getting error that missing dependencies - requires many downloads
+#try getting it from conda
+conda create -n Bacterial_WGS -c conda-forge -c bioconda busco=5.8.2
+conda activate Bacterial_WGS
+#Did not work, still getting same error with conda
+#Trying to install Docker instead - weird, you are working from a container so inputs are different
+
+docker pull ezlabgva/busco:v5.8.2_cv1
+docker run -u $(id -u) -v $(pwd):/busco_wd ezlabgva/busco:v5.8.2_cv1
+
+#look at the help menu
+docker run --rm -u $(id -u) -v $(pwd):/busco_wd ezlabgva/busco:v5.8.2_cv1 busco --help
+# run busco
+docker run --rm -u $(id -u) -v $(pwd):/busco_wd ezlabgva/busco:v5.8.2_cv1 \
+    busco -i /busco_wd/spades_assembly_default/contigs.fasta -m genome -o /busco_wd/busco-results -l bacteria
+#Looks like very incomplete genome (116 features missing out of 120)
+
+# view the short summary
+less -S busco-results/short_summary.specific.bacteria_odb10.busco-results.txt
+# view the full table
+less -S busco-results/run_bacteria_odb10/full_table.tsv
+# list and view a amino acid of protein sequence
+ls busco_wd/busco-results/run_bacteria_odb10/busco_sequences/fragmented_busco_sequences
+#I think busco says its not a great genome assembly
+
+#Prokka database for genome annotation: https://github.com/tseemann/prokka
+docker pull staphb/prokka:latest
+docker run staphb/prokka:latest prokka -h
+
+docker run --rm -it -v $(pwd):/data staphb/prokka /bin/bash
+ls -lh /data/spades_assembly_default/contigs.fasta
+
+docker run --rm -u $(id -u) -v $(pwd)/spades_assembly_default:/data staphb/prokka \
+    prokka /data/contigs.fasta --outdir /data/prokka_output --cpus 6 --mincontiglen 200
+
+#View output
+# List all the output files.
+ls spades_assembly_default/prokka_output
+# The GFF file contains the all the annotations and coordinates. It can be viewed in excel or with BASH. 
+# Extract all the products from the GFF (we made this command up in class)
+# Copy this command to get a txt file with counts for each gene annotation.
+grep -o "product=.*" spades_assembly_default/prokka_output/PROKKA_*.gff | sed 's/product=//g' | sort | uniq -c | sort -nr > protein_abundances.txt
+
+'grep -o' is used to pull out only CDS sequences with a product, just the definition.
+# sed 's/search_term/replace_term/g', is used to search a replace items, below we want to remove all the 'product='
+# "sort | uniq -c " togethor combine all the duplicate lines and provide a count for each.
+# finally we save it to a file by using " > my_file"
+
+#Extract 16S sequence
+# grep for 16S in the PROKKA annotations to see if it exists
+grep 16S spades_assembly_default/prokka_output/*.ffn
+# run extract with an exact header
+extract_sequences "16S ribosomal RNA" spades_assembly_default/prokka_output/PROKKA_*.ffn > 16S_sequence.fasta
+# check if it worked
+less -S 16S_sequence.fasta
+
+#I don't think we obtained a 16S rRNA sequence
+
+# run the scipt, note that it will automatically use nohup since it will take about 30 minutes to run
+blob_blast.sh contigs.fasta
+# view the results, the last column is the species identification
+tabview contigs.fasta.vs.nt.cul5.1e5.megablast.out
+
+#Using the terminal to BLAST contigs
+#Download BLAST
+~/programs/ncbi-blast-2.16.0+/bin/makeblastdb -in spades_assembly_default/contigs.fasta -dbtype nucl -out contigs_db 
+
+
+#Stopped - Not working
+# run the scipt, note that it will automatically use nohup since it will take about 30 minutes to run
+blob_blast.sh spades_assembly_default/contigs.fasta
+# view the results, the last column is the species identification
+tabview contigs.fasta.vs.nt.cul5.1e5.megablast.out
+
+
+#Below wrapper script not working (bob_blast.sh)
+
+blast_flavor=megablast
+database_path=spades_assembly_default/contigs.fasta
+outname=$(basename $1)
+
+~/programs/ncbi-blast-2.16.0+/bin/blastn \
+-task $blast_flavor \
+-query $1 \
+-db $database_path \
+-outfmt '6 qseqid staxids bitscore std sscinames sskingdoms stitle' \
+-culling_limit 5 \
+-num_threads 48 \
+-evalue 1e-25 \
+-out $outname.vs.nt.cul5.1e25.megablast.out
+
+~/programs/ncbi-blast-2.16.0+/bin/blastn \
+-task megablast \
+-query spades_assembly_default/contigs.fasta \
+-db ~/programs/ncbi-blast-2.16.0+/db/nt \
+-outfmt "6 qseqid staxids bitscore std sscinames sskingdoms stitle" \
+-culling_limit 5 \
+-num_threads 8 \
+-evalue 1e-25 \
+-out contigs_vs_nt_cul5_1e25.megablast.out
 
